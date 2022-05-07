@@ -1,0 +1,23 @@
+Requirements of wordle
+- should contain everything i need to implement
+
+
+Wordle
+- each guess must be a 5 letter word
+- you have 6 tries
+- can backspace
+- when you press enter
+  - Board
+    - show past attempt
+    - show current attempt
+    - correct letter wrong position is blue
+    - correct letter correct position is orange
+    - wrong letters are gray
+    - shake row when word is invalid
+  - Keyboard
+    - reflects best knowledge of game state
+    - if letter is both blue and orange in attempts, letter will be orange
+    - attempted letters that are not used are grayed out
+    - can input by typing or by pressing keys on Keyboard
+  - letter change color with animation one by one
+  - current attempt letters have slight light border
