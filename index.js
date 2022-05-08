@@ -33,6 +33,50 @@ function handleKeyDown(e) {
   handleKey(letter)
 }
 
+function handleKey(key) {
+  if (history.length === 6) return;
+  if (isAnimating) return;
+
+  if (key === 'enter') {
+    if (currentAttempt.length < 5) return;
+    if (!wordList.includes(currentAttempt)) {
+      alert('Not a word!')
+      return
+    }
+
+    history.push(currentAttempt);
+    currentAttempt = '';
+    updateKeyboard()
+    pauseInput()
+
+  } else if (key === 'backspace') {
+    if (currentAttempt.length === 0) return;
+    currentAttempt = currentAttempt.slice(0, currentAttempt.length-1);
+
+  } else if (/^[a-z]$/.test(key)) {
+    if (currentAttempt.length >= 5) return;
+    currentAttempt += key;
+    animatePress(currentAttempt.length-1)
+  }
+
+  updateGrid()
+  saveGame()
+
+  if (history.length === 6 && history[history.length-1] !== answer) {
+    setTimeout(() => alert(answer), 100)
+  }
+}
+
+let isAnimating = false
+function pauseInput() {
+  if (isAnimating) throw Error('Should not be animating')
+  isAnimating = true;
+  setTimeout(() => {
+    isAnimating = false;
+    console.log('anime')
+  }, 2000)
+}
+
 function buildGrid() {
   for (let i=0; i<ROWS; i++) {
     let row = document.createElement('div');
@@ -105,40 +149,6 @@ function getBgColor(attempt, i) {
     return BLUE;
   }
   return MIDDLEGREY;
-}
-
-function handleKey(key) {
-  if (history.length === 6) return;
-
-  if (key === 'enter') {
-    if (currentAttempt.length < 5) return;
-    if (!wordList.includes(currentAttempt)) {
-      alert('Not a word!')
-      return
-    }
-
-    history.push(currentAttempt);
-    currentAttempt = '';
-    updateKeyboard()
-
-  } else if (key === 'backspace') {
-    if (currentAttempt.length === 0) return;
-    currentAttempt = currentAttempt.slice(0, currentAttempt.length-1);
-
-  } else if (/^[a-z]$/.test(key)) {
-    if (currentAttempt.length >= 5) return;
-    currentAttempt += key;
-
-    animatePress(currentAttempt.length-1)
-
-  }
-
-  updateGrid()
-  saveGame()
-
-  if (history.length === 6 && history[history.length-1] !== answer) {
-    setTimeout(() => alert(answer), 100)
-  }
 }
 
 function buildRow(letters, isLast) {
@@ -250,6 +260,6 @@ buildGrid()
 updateGrid()
 buildKeyboard()
 updateKeyboard()
-saveGame()
+pauseInput()
 
 document.addEventListener('keydown', handleKeyDown);
