@@ -1,5 +1,7 @@
 <h1>Wordle</h1>
+
 <div id="grid"></div>
+<div id="keyboard"></div>
 <script src="index.js"></script> 
 
 <style>
@@ -24,5 +26,31 @@
     font-size: 30px;
     font-weight: bold;
     line-height: 60px;
+  }
+
+  #keyboard {
+    margin-top: 20px;
+  }
+
+  .keyboardBtn {
+    background-color: #888;
+    color: white;
+    border: none;
+    margin: 3px;
+    font-size: 13px;
+    border-radius: 3px;
+    font-weight: bold;
+    text-transform: uppercase;
+    height: 56px;
+    cursor: pointer;
+  }
+
+  .letterKey {
+    width: 40px;
+
+  }
+
+  .specialKey {
+    padding: 15px;
   }
 </style>
