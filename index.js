@@ -40,7 +40,8 @@ function handleKey(key) {
   if (key === 'enter') {
     if (currentAttempt.length < 5) return;
     if (!wordList.includes(currentAttempt)) {
-      alert('Not a word!')
+      animateShake()
+      // alert('Not a word!')
       return
     }
 
@@ -73,7 +74,6 @@ function pauseInput() {
   isAnimating = true;
   setTimeout(() => {
     isAnimating = false;
-    console.log('anime')
   }, 2000)
 }
 
@@ -139,6 +139,7 @@ function drawAttempt(row, attempt, isSolved) {
       cell.classList.add('solved')
     } else cell.classList.remove('solved')
   }
+  clearAnimations(row)
 }
 
 function getBgColor(attempt, i) {
@@ -237,7 +238,19 @@ function animatePress(index) {
   cell.style.animationName = 'press'
   cell.style.animationDuration = '100ms'
   cell.style.animationTimingFunction = 'ease-out'
+}
 
+function animateShake() {
+  let rowIndex = history.length;
+  let row = grid.children[rowIndex]
+  row.style.animationName = 'shake'
+  row.style.animationDuration = '800ms'
+  isAnimating = true
+
+  setTimeout(() => {
+    clearAnimations(row)
+    isAnimating = false
+  }, 1000)
 }
 
 function clearAnimations(cell) {
