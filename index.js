@@ -66,9 +66,16 @@ function drawAttempt(row, attempt, isCurrent) {
     }
 
     if (isCurrent) {
-      cell.style.backgroundColor = BLACK;
+      cell.style.backgroundColor = DARKGREY;
+      cell.style.borderColor = MIDDLEGREY;
+      if (attempt[i] !== undefined) {
+        cell.style.backgroundColor = BLACK
+        cell.style.borderColor = LIGHTGREY;
+      }
     } else {
-      cell.style.backgroundColor = getBgColor(attempt, i);
+      const bgColor = getBgColor(attempt, i);
+      cell.style.backgroundColor = bgColor;
+      cell.style.borderColor = bgColor;
     }
   }
 }
@@ -80,7 +87,7 @@ function getBgColor(attempt, i) {
   if (answer.indexOf(attemptLetter) !== -1) {
     return BLUE;
   }
-  return LIGHTGREY;
+  return MIDDLEGREY;
 }
 
 function handleKey(key) {
@@ -193,8 +200,11 @@ function saveGame() {
 }
 
 let GREEN = '#538d4e'
-let BLACK = '##86888a'
-let LIGHTGREY = '#212121'
+let GREY = '#212121'
+let LIGHTGREY = '#777'
+let MIDDLEGREY = '#444'
+let DARKGREY = '#111'
+let BLACK = '#000'
 let BLUE = '#85c0f9'
 let keyboardButtons = new Map()
 
