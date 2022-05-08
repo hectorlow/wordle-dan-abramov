@@ -78,13 +78,18 @@ function pauseInput() {
 }
 
 function buildGrid() {
+  let numAttempts = history.length;
   for (let i=0; i<ROWS; i++) {
     let row = document.createElement('div');
     for (let j=0; j<COLS; j++) {
       let cell = document.createElement('div');
       let surface = document.createElement('div')
       surface.className = 'surface'
-      surface.style.transitionDelay = (j*300) + 'ms'
+      if (i < numAttempts) {
+        surface.style.transitionDelay = (j*100) + 'ms'
+      } else {
+        surface.style.transitionDelay = (j*300) + 'ms'
+      }
       let front = document.createElement('div')
       front.className = 'front'
       let back = document.createElement('div')
@@ -276,3 +281,6 @@ updateKeyboard()
 pauseInput()
 
 document.addEventListener('keydown', handleKeyDown);
+
+// animation speed
+// notif modal
