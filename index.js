@@ -41,14 +41,13 @@ function handleKey(key) {
     if (currentAttempt.length < 5) return;
     if (!wordList.includes(currentAttempt)) {
       animateShake()
-      // alert('Not a word!')
+      alert('Not a word!')
       return
     }
 
     history.push(currentAttempt);
     currentAttempt = '';
-    updateKeyboard()
-    pauseInput()
+    pauseInput(updateKeyboard)
 
   } else if (key === 'backspace') {
     if (currentAttempt.length === 0) return;
@@ -69,11 +68,12 @@ function handleKey(key) {
 }
 
 let isAnimating = false
-function pauseInput() {
+function pauseInput(callback) {
   if (isAnimating) throw Error('Should not be animating')
   isAnimating = true;
   setTimeout(() => {
     isAnimating = false;
+    callback()
   }, 2000)
 }
 
@@ -118,6 +118,11 @@ function updateGrid() {
 }
 
 function drawAttempt(row, attempt, isSolved) {
+  let letters = new Map();
+  for (const [key, count] of countOfLetter) {
+    letters.set(key, count);
+  }
+
   for (let i=0; i<COLS; i++) {
     let cell = row.children[i]
     let surface = cell.firstChild
@@ -136,7 +141,13 @@ function drawAttempt(row, attempt, isSolved) {
     front.style.borderColor = MIDDLEGREY;
     if (attempt[i] !== undefined) front.style.borderColor = LIGHTGREY;
 
-    const bgColor = getBgColor(attempt, i);
+    let bgColor = getBgColor(attempt, i);
+    if (bgColor === GREEN || bgColor === BLUE) {
+      let count = letters.get(attempt[i])
+      if (count === 0) bgColor = MIDDLEGREY
+      else letters.set(attempt[i], --count)
+    }
+
     back.style.backgroundColor = bgColor;
     back.style.borderColor = bgColor;
 
@@ -272,15 +283,21 @@ let DARKGREY = '#111'
 let BLACK = '#000'
 let BLUE = '#85c0f9'
 let keyboardButtons = new Map()
+let countOfLetter = new Map()
+
+for (const letter of answer) {
+  let count = countOfLetter.get(letter);
+  if (count === undefined) {
+    countOfLetter.set(letter, 1)
+  } else {
+    countOfLetter.set(letter, ++count)
+  }
+}
 
 loadGame()
 buildGrid()
 updateGrid()
 buildKeyboard()
 updateKeyboard()
-pauseInput()
 
 document.addEventListener('keydown', handleKeyDown);
-
-// animation speed
-// notif modal

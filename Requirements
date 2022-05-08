@@ -30,3 +30,4 @@ Wordle
 - responsive mode
 - pause input during animation
 - update keyboard only after animation is done
+- handling of repeated letters
