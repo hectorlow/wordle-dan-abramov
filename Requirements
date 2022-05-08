@@ -21,3 +21,11 @@ Wordle
     - can input by typing or by pressing keys on Keyboard
   - letter change color with animation one by one
   - current attempt letters have slight light border
+  - shake when word not in word list
+  - popup message on undesired events
+  - popup message stacks and disappears nicely
+- end game popup answer
+- flip animation delay different for previous attempts and current attempt
+- no statistics board
+- responsive mode
+- pause input during animation

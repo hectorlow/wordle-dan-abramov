@@ -38,8 +38,17 @@ function buildGrid() {
     let row = document.createElement('div');
     for (let j=0; j<COLS; j++) {
       let cell = document.createElement('div');
+      let surface = document.createElement('div')
+      surface.className = 'surface'
+      surface.style.transitionDelay = (j*300) + 'ms'
+      let front = document.createElement('div')
+      front.className = 'front'
+      let back = document.createElement('div')
+      back.className = 'back'
+      surface.appendChild(front)
+      surface.appendChild(back)
+      cell.appendChild(surface)
       cell.className = 'cell'
-      cell.textContent = ''
       row.appendChild(cell)
     }
     grid.appendChild(row);
@@ -47,37 +56,44 @@ function buildGrid() {
 }
 
 function updateGrid() {
-  let row = grid.firstChild;
-  for (const attempt of history) {
-    drawAttempt(row, attempt, false)
-    row = row.nextSibling;
+  for (let i=0; i<ROWS; i++) {
+    let row = grid.children[i];
+    if (i < history.length) {
+      drawAttempt(row, history[i], true)
+    } else if (i === history.length) {
+      drawAttempt(row, currentAttempt, false)
+    } else {
+      drawAttempt(row, '', false)
+    }
   }
-  drawAttempt(row, currentAttempt, true);
 }
 
-function drawAttempt(row, attempt, isCurrent) {
-  if (row === null) return;
+function drawAttempt(row, attempt, isSolved) {
   for (let i=0; i<COLS; i++) {
     let cell = row.children[i]
-    if (attempt[i] === undefined) {
-      cell.innerHTML = "<div style='opacity: 0'>X</div>"
-      clearAnimations(cell)
+    let surface = cell.firstChild
+    let front = surface.children[0]
+    let back = surface.children[1]
+    if (attempt[i] !== undefined) {
+      front.textContent = attempt[i];
+      back.textContent = attempt[i];
     } else {
-      cell.textContent = attempt[i];
+      front.innerHTML = "<div style='opacity: 0'>X</div>"
+      back.innerHTML = "<div style='opacity: 0'>X</div>"
+      clearAnimations(cell)
     }
 
-    if (isCurrent) {
-      cell.style.backgroundColor = DARKGREY;
-      cell.style.borderColor = MIDDLEGREY;
-      if (attempt[i] !== undefined) {
-        cell.style.backgroundColor = BLACK
-        cell.style.borderColor = LIGHTGREY;
-      }
-    } else {
-      const bgColor = getBgColor(attempt, i);
-      cell.style.backgroundColor = bgColor;
-      cell.style.borderColor = bgColor;
-    }
+    front.style.backgroundColor = BLACK;
+    front.style.borderColor = MIDDLEGREY;
+    if (attempt[i] !== undefined) front.style.borderColor = LIGHTGREY;
+
+    const bgColor = getBgColor(attempt, i);
+    back.style.backgroundColor = bgColor;
+    back.style.borderColor = bgColor;
+
+    if (isSolved) {
+      cell.classList.add('solved')
+    } else cell.classList.remove('solved')
   }
 }
 
