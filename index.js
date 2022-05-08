@@ -61,6 +61,7 @@ function drawAttempt(row, attempt, isCurrent) {
     let cell = row.children[i]
     if (attempt[i] === undefined) {
       cell.innerHTML = "<div style='opacity: 0'>X</div>"
+      clearAnimations(cell)
     } else {
       cell.textContent = attempt[i];
     }
@@ -107,9 +108,13 @@ function handleKey(key) {
   } else if (key === 'backspace') {
     if (currentAttempt.length === 0) return;
     currentAttempt = currentAttempt.slice(0, currentAttempt.length-1);
+
   } else if (/^[a-z]$/.test(key)) {
     if (currentAttempt.length >= 5) return;
     currentAttempt += key;
+
+    animatePress(currentAttempt.length-1)
+
   }
 
   updateGrid()
@@ -197,6 +202,22 @@ function saveGame() {
   try {
     localStorage.setItem('wordle', data);
   } catch {}
+}
+
+function animatePress(index) {
+  let rowIndex = history.length;
+  let row = grid.children[rowIndex]
+  let cell = row.children[index]
+  cell.style.animationName = 'press'
+  cell.style.animationDuration = '100ms'
+  cell.style.animationTimingFunction = 'ease-out'
+
+}
+
+function clearAnimations(cell) {
+  cell.style.animationName = ''
+  cell.style.animationDuration = ''
+  cell.style.animationTimingFunction = ''
 }
 
 let GREEN = '#538d4e'
