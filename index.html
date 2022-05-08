@@ -1,7 +1,9 @@
-<h1>Wordle</h1>
 
-<div id="grid"></div>
-<div id="keyboard"></div>
+<div id="screen">
+  <h1>Wordle</h1>
+  <div id="grid"></div>
+  <div id="keyboard"></div>
+</div>
 <script src="index.js"></script> 
 
 <style>
@@ -13,23 +15,38 @@
     font-family: sans-serif;
   }
 
+  h1 {
+    flex: none;
+  }
+
+  #screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+    position: relative;
+  }
+
   #grid {
     padding-top: 30px;
+    flex: 1 1 0%;
   }
 
   .cell {
-    height: 61px;
-    width: 61px;
+    height: 8vh;
+    width: 8vh;
+    max-height: 61px;
+    max-width: 61px;
     border: 1px solid #444;
     margin: 2px;
     display: inline-block;
     font-size: 30px;
     font-weight: bold;
-    line-height: 60px;
+    line-height: 8vh;
   }
 
   #keyboard {
-    margin-top: 20px;
+    margin: 10px 0px;
   }
 
   .keyboardBtn {
@@ -47,10 +64,16 @@
 
   .letterKey {
     width: 40px;
-
   }
 
   .specialKey {
     padding: 15px;
   }
+
+  @media only screen and (max-height: 560px) {
+    .cell {
+      font-size: 16px;
+    }
+  }
+
 </style>

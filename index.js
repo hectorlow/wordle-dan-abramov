@@ -19,16 +19,16 @@ const ROWS  = 6;
 const COLS = 5;
 
 let grid = document.getElementById('grid');
-let attempts = []
+let history = []
 let currentAttempt = '';
 
-let randomIndex = Math.floor(Math.random() * wordList.length);
-// let answer = 'digit'
-let answer = wordList[randomIndex];
+// let randomIndex = Math.floor(Math.random() * wordList.length);
+// let answer = wordList[randomIndex];
+let answer = 'patio'
 console.log(answer, wordList.length)
 
 function handleKeyDown(e) {
-  if (key.ctrlKey || key.altKey || key.shiftKey || key.metaKey) return
+  if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) return
   let letter = e.key.toLowerCase();
   handleKey(letter)
 }
@@ -48,7 +48,7 @@ function buildGrid() {
 
 function updateGrid() {
   let row = grid.firstChild;
-  for (const attempt of attempts) {
+  for (const attempt of history) {
     drawAttempt(row, attempt, false)
     row = row.nextSibling;
   }
@@ -56,6 +56,7 @@ function updateGrid() {
 }
 
 function drawAttempt(row, attempt, isCurrent) {
+  if (row === null) return;
   for (let i=0; i<COLS; i++) {
     let cell = row.children[i]
     if (attempt[i] === undefined) {
@@ -83,6 +84,8 @@ function getBgColor(attempt, i) {
 }
 
 function handleKey(key) {
+  if (history.length === 6) return;
+
   if (key === 'enter') {
     if (currentAttempt.length < 5) return;
     if (!wordList.includes(currentAttempt)) {
@@ -90,8 +93,9 @@ function handleKey(key) {
       return
     }
 
-    attempts.push(currentAttempt);
+    history.push(currentAttempt);
     currentAttempt = '';
+    updateKeyboard()
 
   } else if (key === 'backspace') {
     if (currentAttempt.length === 0) return;
@@ -102,6 +106,11 @@ function handleKey(key) {
   }
 
   updateGrid()
+  saveGame()
+
+  if (history.length === 6 && history[history.length-1] !== answer) {
+    setTimeout(() => alert(answer), 100)
+  }
 }
 
 function buildRow(letters, isLast) {
@@ -124,6 +133,7 @@ function buildRow(letters, isLast) {
       handleKey(letter)
     } 
     row.appendChild(key)
+    keyboardButtons.set(letter, key);
   }
   if (isLast) {
     let key = document.createElement('button')
@@ -142,13 +152,57 @@ function buildKeyboard() {
   buildRow('zxcvbnm', true)
 }
 
+function getBetterColor(color1, color2) {
+  if (color1 === GREEN || color2 === GREEN) return GREEN;
+  if (color1 === BLUE || color2 === BLUE) return BLUE;
+  return LIGHTGREY;
+}
+
+function updateKeyboard() {
+  let bestColors = new Map()
+  for (const attempt of history) {
+    for (let i=0; i<attempt.length; i++) {
+      let key = attempt[i]
+      let color = getBgColor(attempt, i)
+      let bestColor = getBetterColor(color, bestColors.get(key));
+      bestColors.set(key, bestColor)
+    }
+  }
+
+  for (const [key, color] of bestColors) {
+    let button = keyboardButtons.get(key)
+    button.style.backgroundColor = color
+  }
+}
+
+function loadGame() {
+  let data 
+  try {
+    data = JSON.parse(localStorage.getItem('wordle'))
+  } catch {}
+  if (data !== null && data.answer === answer) {
+    history = data.history
+  }
+}
+
+function saveGame() {
+  let data = JSON.stringify({ history, answer });
+  try {
+    localStorage.setItem('wordle', data);
+  } catch {}
+}
+
 let GREEN = '#538d4e'
 let BLACK = '##86888a'
 let LIGHTGREY = '#212121'
 let BLUE = '#85c0f9'
+let keyboardButtons = new Map()
 
-buildGrid();
-updateGrid();
-buildKeyboard();
+loadGame()
+buildGrid()
+updateGrid()
+buildKeyboard()
+updateKeyboard()
+saveGame()
 
 document.addEventListener('keydown', handleKeyDown);
