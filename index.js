@@ -47,7 +47,7 @@ function handleKey(key) {
 
     history.push(currentAttempt);
     currentAttempt = '';
-    pauseInput(updateKeyboard)
+    pauseInput(1800, updateKeyboard)
 
   } else if (key === 'backspace') {
     if (currentAttempt.length === 0) return;
@@ -68,13 +68,13 @@ function handleKey(key) {
 }
 
 let isAnimating = false
-function pauseInput(callback) {
+function pauseInput(duration, callback) {
   if (isAnimating) throw Error('Should not be animating')
   isAnimating = true;
   setTimeout(() => {
     isAnimating = false;
     callback()
-  }, 2000)
+  }, duration)
 }
 
 function buildGrid() {
@@ -299,5 +299,6 @@ buildGrid()
 updateGrid()
 buildKeyboard()
 updateKeyboard()
+pauseInput(400, () => {})
 
 document.addEventListener('keydown', handleKeyDown);
