@@ -117,12 +117,52 @@ function updateGrid() {
   }
 }
 
+// check all correct letter and correct position
+// check all correct letter and wrong position
+// rest is black
+
 function drawAttempt(row, attempt, isSolved) {
   let letters = new Map();
   for (const [key, count] of countOfLetter) {
     letters.set(key, count);
   }
 
+  // set greens
+  for (let i=0; i<COLS; i++) {
+    let cell = row.children[i]
+    let surface = cell.firstChild
+    let back = surface.children[1]
+
+    let bgColor = getBgColor(attempt, i)
+    if (bgColor === GREEN) {
+      let count = letters.get(attempt[i])
+      letters.set(attempt[i], --count)
+
+      back.style.backgroundColor = bgColor
+      back.style.borderColor = bgColor
+    }
+  }
+
+  // set blues, if not greys
+  for (let i=0; i<COLS; i++) {
+    let cell = row.children[i]
+    let surface = cell.firstChild
+    let back = surface.children[1]
+
+    let bgColor = getBgColor(attempt, i)
+    let count = letters.get(attempt[i])
+    if (bgColor === GREEN) continue
+    if (bgColor === BLUE && count > 0) {
+      letters.set(attempt[i], --count)
+      back.style.backgroundColor = bgColor
+      back.style.borderColor = bgColor
+    } else {
+      back.style.backgroundColor = MIDDLEGREY
+      back.style.borderColor = MIDDLEGREY
+    }
+  }
+
+  // set text content
   for (let i=0; i<COLS; i++) {
     let cell = row.children[i]
     let surface = cell.firstChild
@@ -140,16 +180,6 @@ function drawAttempt(row, attempt, isSolved) {
     front.style.backgroundColor = BLACK;
     front.style.borderColor = MIDDLEGREY;
     if (attempt[i] !== undefined) front.style.borderColor = LIGHTGREY;
-
-    let bgColor = getBgColor(attempt, i);
-    if (bgColor === GREEN || bgColor === BLUE) {
-      let count = letters.get(attempt[i])
-      if (count === 0) bgColor = MIDDLEGREY
-      else letters.set(attempt[i], --count)
-    }
-
-    back.style.backgroundColor = bgColor;
-    back.style.borderColor = bgColor;
 
     if (isSolved) {
       cell.classList.add('solved')
