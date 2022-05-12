@@ -1,0 +1,131 @@
+body, html {
+  background-color: black;
+  color: white;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: sans-serif;
+}
+
+h1 {
+  flex: none;
+}
+
+#screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+  position: relative;
+}
+
+#grid {
+  padding-top: 30px;
+  flex: 1 1 0%;
+}
+
+.cell {
+  height: 8vh;
+  width: 8vh;
+  max-height: 61px;
+  max-width: 61px;
+  background-color: #111;
+  margin: 3px;
+  display: inline-block;
+  font-size: 30px;
+  font-weight: bold;
+  line-height: 8vh;
+  position: relative;
+  perspective: 1000px;
+}
+
+.cell .surface {
+  position: relative;
+  transition: 800ms;
+  transform-style: preserve-3d;
+  height: 100%;
+  width: 100%;
+}
+
+.cell.solved .surface {
+  transform: rotateX(180deg);
+}
+
+.cell .front, .cell .back {
+  border: 2px solid #444;
+  backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.cell .front {
+  z-index: 2;
+}
+
+.cell .back {
+  z-index: 1;
+  transform: rotateX(180deg);
+}
+
+#keyboard {
+  margin: 10px 0px;
+}
+
+.keyboardBtn {
+  background-color: #888;
+  color: white;
+  border: none;
+  margin: 3px;
+  font-size: 13px;
+  border-radius: 3px;
+  font-weight: bold;
+  text-transform: uppercase;
+  height: 56px;
+  cursor: pointer;
+}
+
+.letterKey {
+  width: 40px;
+}
+
+.specialKey {
+  padding: 15px;
+}
+
+@keyframes press {
+  from {
+    opacity: 0.5;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate(-1px, 0);
+  }
+  20%, 80% {
+    transform: translate(1px, 0);
+  }
+  30%, 50%, 70% {
+    transform: translate(-2px, 0);
+  }
+  40%, 60% {
+    transform: translate(2px, 0);
+  }
+}
+
+@media only screen and (max-height: 560px) {
+  .cell {
+    font-size: 16px;
+  }
+}
